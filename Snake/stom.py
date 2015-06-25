@@ -47,9 +47,15 @@ while True:
     if line == "quit":              #We krijgen dit door als het spel is afgelopen
         print("bye")                #Geef door dat we dit begrepen hebben
         break
+    
+    print("Hoi")
+    print("Doei")
 
     speler_bewegingen = line        #String met bewegingen van alle spelers
                                     #Nu is speler_bewegingen[i] de richting waarin speler i beweegd
+
+    a = 1
+    b = a + 1
 
     aantal_voedsel = int(input())   #Lees aantal nieuw voedsel en posities
     voedsel_posities = []
