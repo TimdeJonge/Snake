@@ -1,6 +1,6 @@
 #!/bin/python
+from queue import PriorityQueue
 import random
-from snake import Snake
 ###Initialisatie
 # We lezen het doolhof en beginposities in
 
@@ -35,23 +35,98 @@ richting = 'urdl'
 def run_ai():
     snake = [positie]
 
-    log = open('logs/test' + str(speler_nummer) + '.txt', 'w')
+    head = (positie[0],positie[1])
+    
+    
+    def isWall(node):
+        if level[node[0]][node[1]] == '#':
+            return True
+        return False
+    
+    def isFood(node):
+        if level[node[0]][node[1]] == 'x':
+            return True
+        return False
+        
+    
+        
+    def mapLevel(start):
+        frontier = PriorityQueue()
+        frontier.put(start, 0)
+        foodlist = {}
+        cost = {}
+        came_from = {}
+        cost[start] = 0
+        came_from[start] = None
+        while(not frontier.empty()):
+            current = frontier.get()
+            neighbours = [((current[0] + dx[i])%level_breedte, (current[1] + dy[i])%level_hoogte) for i in range(4)]
+            for node in neighbours:
+                
+                new_cost = cost[current] + 1
+                testBool = (node not in came_from or new_cost < cost[node]) and not isWall(node) 
+                if testBool:
+                    if isFood(node):
+                        foodlist[node] = new_cost
+                    came_from[node] = current
+                    cost[node] = new_cost
+                    frontier.put(node, new_cost)
+        #print(foodlist)
+        minimum = 10**6
+        close_food = (start[0],start[1]+1)
+        for node in foodlist:
+            if foodlist[node] < minimum:
+                close_food = node
+                minimum = foodlist[node]
+        return [came_from, cost, close_food]
+    
+    temp = mapLevel(head)
+    arrowMap, lengthMap, closest_food = temp[0], temp[1], temp[2]
+    
+    def givePath(goal):
+        current = goal
+        path = [current]
+        while current != head:
+            current = arrowMap[current]
+            path.append(current)
+        path.reverse()
+        return path
+    
+    def giveDistance(goal):
+       return lengthMap[goal]
+    
+    #print(givePath(closest_food))    
+
+    #log = open('logs/test' + str(speler_nummer) + '.txt', 'w')
 
     while True:
-        for y in range(level_hoogte):
-            print("".join(level[y]))
-        moves = possible_moves(positie[0],positie[1])
-        log.write("test")
-        log.write(str(moves) + '\n')
-    
-        if len(moves) == 0:
-            i = 1                           #Waarde tussen 0 en 3
+        #for y in range(level_hoogte):
+            #print("".join(level[y]))
+        moves = givePath(closest_food)[1]
+        #log.write("test")
+        #log.write(str(moves) + '\n')
+        
+        direction = ""
+        
+        if head[0] == moves[0]:
+            if head[1] == (moves[1] - 1):
+                direction = "r"
+            else:
+                direction = "l"
+        elif head[0] == (moves[0] - 1):
+            direction = "u"
         else:
-            i = moves[random.randrange(len(moves))]
+            direction = "d"
+    
+        if moves == "ERROR":
+            direction = 'r'                           #Waarde tussen 0 en 3
         
-        log.write(str(i) + "\n")
-        log.write(richting[i] + "\n")
+        #print(direction)
         
+        #log.write(str(i) + "\n")
+        #log.write(richting[i] + "\n")
+        
+        i = 0
         positie[0] = (positie[0] + dx[i]) % level_breedte             #Verander de huidige positie
         positie[1] = (positie[1] + dy[i]) % level_hoogte
     
@@ -64,7 +139,7 @@ def run_ai():
             level[pos_y][pos_x] = str(speler_nummer)
     
         print('move')                   #Geef door dat we gaan bewegen
-        print(richting[i])                 #Geef de richting door
+        print(direction)                 #Geef de richting door
     
         line = input()                  #Lees nieuwe informatie
     
@@ -74,8 +149,10 @@ def run_ai():
     
         speler_bewegingen = line        #String met bewegingen van alle spelers
                                         #Nu is speler_bewegingen[i] de richting waarin speler i beweegt
-    
-        aantal_voedsel = int(input())   #Lees aantal nieuw voedsel en posities
+        regel = input()
+        while len(regel) == 0:
+            regel = input()
+        aantal_voedsel = int(regel)   #Lees aantal nieuw voedsel en posities
         voedsel_posities = []
         for i in range(aantal_voedsel):
             voedsel_positie = [int(s) for s in input().split()]
@@ -83,30 +160,8 @@ def run_ai():
             voedsel_posities.append(voedsel_positie)
             level[voedsel_positie[1]][voedsel_positie[0]] = "x"
     
-    log.close()
+    #log.close()
 
-
-def possible_moves(x, y):
-    # u=up, d=down, l=left, r=right
-    # dx en dy geven aan in welke richting 'u', 'r', 'd' en 'l' zijn:
-    #dx = [ 0, 1, 0,-1]
-    #dy = [-1, 0, 1, 0]
-    
-    #richting = 'urdl'
-    valide_richting_leeg = []
-    valide_richting_snoep = []
-    
-    for i in range(0,4):
-        x_new = (x + dx[i]) % level_breedte             #Verander de huidige positie
-        y_new = (y + dy[i]) % level_hoogte
-        if level[y_new][x_new] == '.':
-            valide_richting_leeg.append(i)
-        elif level[y_new][x_new] == 'x':
-            valide_richting_snoep.append(i)
-    if len(valide_richting_snoep) == 0:
-        return(valide_richting_leeg)
-    else:
-        return(valide_richting_snoep)
 
 if __name__ == "__main__":
     run_ai()
