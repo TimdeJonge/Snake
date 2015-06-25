@@ -18,7 +18,7 @@ for i in range(aantal_spelers):
     begin_posities.append(begin_positie)      #Voeg dit coordinaat toe aan begin_posities
 
 speler_nummer = int(input())        #Lees welk spelernummer wij zijn
-
+##IK TYP HIER OM EEN CONFLICT TE MAKEN WERKT HET AL
 
 ###De tijdstap
 
