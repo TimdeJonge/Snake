@@ -1,6 +1,7 @@
 class Snake(object):
     def __init__(self, segments=[], score = 0, last_segment = (), head = ()):
         self.segments = segments
+        self.head = segments[-1]
         self.score = score
     
     def __str__(self):
