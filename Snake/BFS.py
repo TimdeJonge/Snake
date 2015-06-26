@@ -30,36 +30,27 @@ def isFood(node):
     
 def mapLevel(start):
     frontier = PriorityQueue()
-    frontier.put(start, 0)
-    foodlist = {}
+    frontier.put((0,start))
     cost = {}
     came_from = {}
     cost[start] = 0
     came_from[start] = None
     while(not frontier.empty()):
-        current = frontier.get()
+        current = frontier.get()[1]
+        print(current, cost[current])
         neighbours = [((current[0] + dx[i])%10, (current[1] + dy[i])%10) for i in range(4)]
         for node in neighbours:
             
             new_cost = cost[current] + 1
             testBool = (node not in came_from or new_cost < cost[node]) and not isWall(node) 
             if testBool:
-                if isFood(node):
-                    foodlist[node] = new_cost
                 came_from[node] = current
                 cost[node] = new_cost
-                frontier.put(node, new_cost)
-    print(foodlist)
-    minimum = 10**6
-    for node in foodlist:
-        if foodlist[node] < minimum:
-            closest_food = node
-            minimum = foodlist[node]
-    print(closest_food)
-    return [came_from, cost, closest_food]
+                frontier.put((new_cost,node))
+    return [came_from, cost]
 
 temp = mapLevel(head)
-arrowMap, lengthMap, closest_food = temp[0], temp[1], temp[2]
+arrowMap, lengthMap= temp[0], temp[1]
 
 def givePath(goal):
     current = goal
@@ -72,8 +63,5 @@ def givePath(goal):
 
 def giveDistance(goal):
    return lengthMap[goal]
-
-print(givePath(closest_food))    
-
 
 source = 'http://www.redblobgames.com/pathfinding/a-star/introduction.html'
