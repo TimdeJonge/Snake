@@ -50,6 +50,8 @@ while True:
                                     #Nu is speler_bewegingen[i] de richting waarin speler i beweegd
 
     aantal_voedsel = int(input())   #Lees aantal nieuw voedsel en posities
+    if aantal_voedsel == 0:
+        input()
     voedsel_posities = []
     for i in range(aantal_voedsel):
         voedsel_positie = [int(s) for s in input().split()]
