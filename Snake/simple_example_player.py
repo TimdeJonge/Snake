@@ -23,32 +23,38 @@ for i in range(aantal_spelers):
 speler_nummer = int(input())        #Lees welk spelernummer wij zijn
 ###De tijdstap
 snakes = [Snake([begin_posities[i]]) for i in range(aantal_spelers)]
-#for i in range(len(snakes)):
-#    print("Snake nummer " + str(i) + " is op positie" + str(snakes[i]) + " VOOR DE GAME") 
+
 # We beginnen op de volgende positie:
-positie = copy(begin_posities[speler_nummer])
+positie = begin_posities[speler_nummer]
 
 # u=up, d=down, l=left, r=right
 # dx en dy geven aan in welke richting 'u', 'r', 'd' en 'l' zijn:
 dx = [ 0, 1, 0,-1, 0]
 dy = [-1, 0, 1, 0, 0]
 
-#i = 'urdl'.index(coordinate)
-#coordinate = ((self.segments[-1][0] + dy[i]) % level_hoogte, (self.segments[-1][1] + dx[i]) % level_breedte)
-
-
-
 while True:
-    i = random.randrange(4)         #Kies een random richting
-    richting = 'urdl'[i]            #u=up, d=down, l=left, r=right
-    positie[0] += dx[i]             #Verander de huidige positie
-    positie[1] += dy[i]
-                                    #Let op periodieke randvoorwaarden!
-    positie[0] = (positie[0] + level_breedte)% level_breedte
-    positie[1] = (positie[1] + level_hoogte) % level_hoogte
+    moves_empty = []
+    moves_candy = []
+    for i in range(4):
+        x_new = (snakes[speler_nummer].segments[-1][0] + dx[i]) % level_breedte
+        y_new = (snakes[speler_nummer].segments[-1][1] + dy[i]) % level_hoogte
+        print("Nu onderzoeken we in vorm (x,y) het coordinaat (" + str(x_new) + ", " + str(y_new) + ")")
+        print("We vinden " + level[y_new][x_new])
+        if level[y_new][x_new] == '.':
+            moves_empty.append('urdl'[i])
+            print(moves_empty)
+        elif level[y_new][x_new] == 'x':
+            moves_candy.append('urdl'[i])
+    if len(moves_candy) != 0: 
+        direction = random.choice(moves_candy)
+    elif len(moves_empty) != 0: 
+        direction = random.choice(moves_empty)
+    else: 
+        direction = 'r'
+        print("Goodbye, cruel world")
 
     print('move')                   #Geef door dat we gaan bewegen
-    print(richting)                 #Geef de richting door
+    print(direction)                 #Geef de richting door
 
     line = input()                  #Lees nieuwe informatie
 
@@ -64,7 +70,6 @@ while True:
                                     #Beweegt naar nieuwe punt
     for j in range(len(snakes)):
         i = 'urdlx'.index(speler_bewegingen[j])
-        #print("Slang nummer " + str(j) + " bevindt zich nu op " + str(snakes[j]) + " VOOR DE ZET")
         coordinate = ((snakes[j].segments[-1][0] + dx[i]) % level_breedte, (snakes[j].segments[-1][1] + dy[i]) % level_hoogte)
         snakes[j].move(coordinate, level[coordinate[1]][coordinate[0]])
     
@@ -74,17 +79,12 @@ while True:
        coordinate = snakes[i].segments[-1]
        if level[coordinate[1]][coordinate[0]] == '.':
            coordinate2 = snakes[i].last_segment
-           print("Het coordinaat dat we nu updaten, is in vorm (x,y): "+ str(coordinate2))
            level[coordinate2[1]][coordinate2[0]] = '.'
        
        level[coordinate[1]][coordinate[0]] = str(i)
 
-           
-    for i in range(len(level)):
-        print("".join(str(level[i])))
-    
-    #for j in range(len(snakes)):
-        #print("Slang nummer " + str(j) + " bevindt zich nu op " + str(snakes[j]) + " NA DE ZET")
+
+
     aantal_voedsel = int(input())   #Lees aantal nieuw voedsel en posities
     if aantal_voedsel == 0:
         input()
