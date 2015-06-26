@@ -40,7 +40,6 @@ def mapLevel(start):
         print(current, cost[current])
         neighbours = [((current[0] + dx[i])%10, (current[1] + dy[i])%10) for i in range(4)]
         for node in neighbours:
-            
             new_cost = cost[current] + 1
             testBool = (node not in came_from or new_cost < cost[node]) and not isWall(node) 
             if testBool:
