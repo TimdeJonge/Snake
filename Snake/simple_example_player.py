@@ -67,8 +67,21 @@ while True:
         #print("Slang nummer " + str(j) + " bevindt zich nu op " + str(snakes[j]) + " VOOR DE ZET")
         coordinate = ((snakes[j].segments[-1][0] + dx[i]) % level_breedte, (snakes[j].segments[-1][1] + dy[i]) % level_hoogte)
         snakes[j].move(coordinate, level[coordinate[1]][coordinate[0]])
+    
+    #TO DO: volgorde bepalen.
         
-   
+    for i in range(len(snakes)):
+       coordinate = snakes[i].segments[-1]
+       if level[coordinate[1]][coordinate[0]] == '.':
+           coordinate2 = snakes[i].last_segment
+           print("Het coordinaat dat we nu updaten, is in vorm (x,y): "+ str(coordinate2))
+           level[coordinate2[1]][coordinate2[0]] = '.'
+       
+       level[coordinate[1]][coordinate[0]] = str(i)
+
+           
+    for i in range(len(level)):
+        print("".join(str(level[i])))
     
     #for j in range(len(snakes)):
         #print("Slang nummer " + str(j) + " bevindt zich nu op " + str(snakes[j]) + " NA DE ZET")

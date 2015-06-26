@@ -1,5 +1,5 @@
 class Snake(object):
-    def __init__(self, segments=[], score = 0, level_breedte = 10, level_hoogte = 10):
+    def __init__(self, segments=[], score = 0, last_segment = ()):
         self.segments = segments
         self.score = score
     
@@ -8,7 +8,7 @@ class Snake(object):
     
     def getScore(self):
         return(self.score)
-    
+        
     def setDimensions(self, breedte, hoogte):
         self.level_breedte = breedte
         self.level_hoogte = hoogte 
@@ -20,7 +20,7 @@ class Snake(object):
             if value == 'x':
                 self.score += 99
             else:
-                self.segments.pop(0)
+                self.last_segment = self.segments.pop(0)
             self.segments.append(coordinate)
             self.score += 1
             
@@ -28,7 +28,9 @@ class Snake(object):
 #snake = Snake([(0,0),(0,1)])
 #snake.setDimensions(10,10)
 #snake.move((1,1),'.')
-#snake.move((1,2), 'x')
+#print(snake.last_segment)
+#snake.move((1,2), '.')
+#print(snake.last_segment)
 #snake.move((1,3), 'x')
 #snake.move((1,3), 'x')
 #snake.move((1,3), 'x')
