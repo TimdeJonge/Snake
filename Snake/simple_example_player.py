@@ -16,7 +16,7 @@ begin_posities = []
 for i in range(aantal_spelers):
     begin_positie = [int(s) for s in input().split()]   #Maak lijst met x en y
     begin_posities.append(begin_positie)      #Voeg dit coordinaat toe aan begin_posities
-
+print("begin_positie=", begin_posities)
 speler_nummer = int(input())        #Lees welk spelernummer wij zijn
 ###De tijdstap
 
