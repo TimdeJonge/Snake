@@ -34,6 +34,7 @@ dy = [-1, 0, 1, 0, 0]
 
 while True:
     start = time.time()
+    moves = PriorityQueue()
     moves_empty = []
     moves_candy = []
     for i in range(4):
@@ -42,13 +43,17 @@ while True:
         #print("Nu onderzoeken we in vorm (x,y) het coordinaat (" + str(x_new) + ", " + str(y_new) + ")")
         #print("We vinden " + level[y_new][x_new])
         if level[y_new][x_new] == '.':
+            moves.put((100 + random.randint(0,5), 'urdl'[i]))
             moves_empty.append('urdl'[i])
         elif level[y_new][x_new] == 'x':
+            moves.put((5, 'urdl'[i]))
             moves_candy.append('urdl'[i])
-    if len(moves_candy) != 0: 
-        direction = random.choice(moves_candy)
-    elif len(moves_empty) != 0: 
-        direction = random.choice(moves_empty)
+    #if len(moves_candy) != 0: 
+        #direction = random.choice(moves_candy)
+    #elif len(moves_empty) != 0: 
+        #direction = random.choice(moves_empty)
+    if not moves.empty():
+        direction = moves.get()[1]
     else: 
         direction = 'r'
         print("Goodbye, cruel world")

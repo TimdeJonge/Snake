@@ -25,7 +25,6 @@ class Snake(object):
             
 
 #snake = Snake([(0,0),(0,1)])
-#snake.setDimensions(10,10)
 #snake.move((1,1),'.')
 #print(snake.last_segment)
 #snake.move((1,2), '.')
