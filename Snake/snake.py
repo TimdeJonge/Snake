@@ -25,17 +25,7 @@ class Snake(object):
             self.score += 1
             print(self.segments)
 
-<<<<<<< HEAD
-snake = Snake([(0,0),(0,1)])
-snake.setDimensions(10,10)
-snake.move((1,1),'.')
-print(snake.last_segment)
-snake.move((1,2), '.')
-print(snake.last_segment)
-snake.move((1,3), 'x')
-snake.move((1,3), 'x')
-snake.move((1,3), 'x')
-=======
+
 #snake = Snake([(0,0),(0,1)])
 #snake.move((1,1),'.')
 #print(snake.last_segment)
@@ -44,6 +34,6 @@ snake.move((1,3), 'x')
 #snake.move((1,3), 'x')
 #snake.move((1,3), 'x')
 #snake.move((1,3), 'x')
->>>>>>> cc10d1ea37bd6892e44e8b876e982073234fb09b
 
-print(snake)
+
+#print(snake)

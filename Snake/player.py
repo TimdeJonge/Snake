@@ -3,6 +3,8 @@ import random
 import time
 from snake import Snake
 from queue import PriorityQueue
+from Heatmap import neighbours
+#from Heatmap import mapHeat
 ###Initialisatie
 # We lezen het doolhof en beginposities in
 

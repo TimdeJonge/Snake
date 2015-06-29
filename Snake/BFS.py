@@ -18,7 +18,7 @@ level=['0##..',
        'x#..#']
 level_hoogte = 6
 level_breedte = 5
-snakes = [Snake([(0,0)]), Snake([(0,3)]), Snake([(2,2)])]  
+snakes = [Snake([(0,0)]), Snake([(2,3)]), Snake([(2,2)])]  
 speler_nummer = 0
 aantal_spelers = 3
 aantal_voedsel = 3
@@ -112,7 +112,7 @@ def mapFood():
                 foodDistance[food].append(-1)
     return foodDistance
 
-print(mapFood())
+#print(mapFood())
 
 
 source = 'http://www.redblobgames.com/pathfinding/a-star/introduction.html'
