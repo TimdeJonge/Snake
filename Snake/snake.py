@@ -1,6 +1,7 @@
 class Snake(object):
-    def __init__(self, segments=[], score = 0, last_segment = ()):
+    def __init__(self, segments=[], score = 0, last_segment = (), head = ()):
         self.segments = segments
+        self.head = segments[-1]
         self.score = score
     
     def __str__(self):
@@ -9,9 +10,6 @@ class Snake(object):
     def getScore(self):
         return(self.score)
         
-    def setDimensions(self, breedte, hoogte):
-        self.level_breedte = breedte
-        self.level_hoogte = hoogte 
         
     def move(self, coordinate, value):
         if coordinate == self.segments[-1]:
@@ -23,9 +21,11 @@ class Snake(object):
                 self.last_segment = self.segments.pop(0)
                 print(self.segments)
             self.segments.append(coordinate)
+            self.head = coordinate
             self.score += 1
             print(self.segments)
 
+<<<<<<< HEAD
 snake = Snake([(0,0),(0,1)])
 snake.setDimensions(10,10)
 snake.move((1,1),'.')
@@ -35,5 +35,15 @@ print(snake.last_segment)
 snake.move((1,3), 'x')
 snake.move((1,3), 'x')
 snake.move((1,3), 'x')
+=======
+#snake = Snake([(0,0),(0,1)])
+#snake.move((1,1),'.')
+#print(snake.last_segment)
+#snake.move((1,2), '.')
+#print(snake.last_segment)
+#snake.move((1,3), 'x')
+#snake.move((1,3), 'x')
+#snake.move((1,3), 'x')
+>>>>>>> cc10d1ea37bd6892e44e8b876e982073234fb09b
 
 print(snake)

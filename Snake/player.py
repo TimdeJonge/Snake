@@ -1,6 +1,6 @@
 #!/bin/python
 import random
-from copy import copy
+import time
 from snake import Snake
 from queue import PriorityQueue
 ###Initialisatie
@@ -33,35 +33,39 @@ dx = [ 0, 1, 0,-1, 0]
 dy = [-1, 0, 1, 0, 0]
 
 while True:
+    start = time.time()
+    moves = PriorityQueue()
     moves_empty = []
     moves_candy = []
     for i in range(4):
-        x_new = (snakes[speler_nummer].segments[-1][0] + dx[i]) % level_breedte
-        y_new = (snakes[speler_nummer].segments[-1][1] + dy[i]) % level_hoogte
-        print("Nu onderzoeken we in vorm (x,y) het coordinaat (" + str(x_new) + ", " + str(y_new) + ")")
-        print("We vinden " + level[y_new][x_new])
+        x_new = (snakes[speler_nummer].head[0] + dx[i]) % level_breedte
+        y_new = (snakes[speler_nummer].head[1] + dy[i]) % level_hoogte
+        #print("Nu onderzoeken we in vorm (x,y) het coordinaat (" + str(x_new) + ", " + str(y_new) + ")")
+        #print("We vinden " + level[y_new][x_new])
         if level[y_new][x_new] == '.':
-            moves_empty.append('urdl'[i])
-            print(moves_empty)
+            moves.put((100 + random.randint(0,5), 'urdl'[i]))
         elif level[y_new][x_new] == 'x':
-            moves_candy.append('urdl'[i])
-    if len(moves_candy) != 0: 
-        direction = random.choice(moves_candy)
-    elif len(moves_empty) != 0: 
-        direction = random.choice(moves_empty)
+            moves.put((5 + random.randint(0,5), 'urdl'[i]))
+    if not moves.empty():
+        direction = moves.get()[1]
     else: 
         direction = 'r'
         print("Goodbye, cruel world")
 
     print('move')                   #Geef door dat we gaan bewegen
     print(direction)                 #Geef de richting door
-
+    
+    end = time.time()
+    print("Deze zet duurde " + str(end - start) + " seconden.")
+    
     line = input()                  #Lees nieuwe informatie
 
     if line == "quit":              #We krijgen dit door als het spel is afgelopen
         print("bye")                #Geef door dat we dit begrepen hebben
         break
+    
 
+    
     speler_bewegingen = line        #String met bewegingen van alle spelers
                                     #Nu is speler_bewegingen[i] de richting waarin speler i beweegd
     
@@ -70,7 +74,7 @@ while True:
                                     #Beweegt naar nieuwe punt
     for j in range(len(snakes)):
         i = 'urdlx'.index(speler_bewegingen[j])
-        coordinate = ((snakes[j].segments[-1][0] + dx[i]) % level_breedte, (snakes[j].segments[-1][1] + dy[i]) % level_hoogte)
+        coordinate = ((snakes[j].head[0] + dx[i]) % level_breedte, (snakes[j].head[1] + dy[i]) % level_hoogte)
         snakes[j].move(coordinate, level[coordinate[1]][coordinate[0]])
         
     for i in range(len(snakes)):
@@ -92,4 +96,4 @@ while True:
         # Sla de voedsel positie op in een lijst en in het level
         voedsel_posities.append(voedsel_positie)
         level[voedsel_positie[1]][voedsel_positie[0]] = "x"
-
+    

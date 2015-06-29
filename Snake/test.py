@@ -39,18 +39,6 @@ while True:
     positie[0] = (positie[0] + level_breedte)% level_breedte
     positie[1] = (positie[1] + level_hoogte) % level_hoogte
     
-    if level[positie[1]][positie[0]] == '#':
-        i = random.randrange(4)         #Kies een random richting
-        richting = 'urdl'[i]            #u=up, d=down, l=left, r=right
-        positie[0] += dx[i]             #Verander de huidige positie
-        positie[1] += dy[i]
-                                        #Let op periodieke randvoorwaarden!
-        positie[0] = (positie[0] + level_breedte)% level_breedte
-        positie[1] = (positie[1] + level_hoogte) % level_hoogte
-    
-    elif level[positie[1]][positie[2]] == :
-        
-
     print('move')                   #Geef door dat we gaan bewegen
     print(richting)                 #Geef de richting door
 
@@ -64,6 +52,8 @@ while True:
                                     #Nu is speler_bewegingen[i] de richting waarin speler i beweegt
 
     aantal_voedsel = int(input())   #Lees aantal nieuw voedsel en posities
+    if aantal_voedsel == 0:
+        input()
     voedsel_posities = []
     for i in range(aantal_voedsel):
         voedsel_positie = [int(s) for s in input().split()]
