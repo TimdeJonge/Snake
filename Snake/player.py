@@ -79,6 +79,8 @@ while True:
         coordinate = ((snakes[j].head[0] + dx[i]) % level_breedte, (snakes[j].head[1] + dy[i]) % level_hoogte)
         snakes[j].move(coordinate, level[coordinate[1]][coordinate[0]])
         
+    #TO DO: volgorde van de zetten bepalen (wanneer welke speler een zet mag doen)
+    
     for i in range(len(snakes)):
        coordinate = snakes[i].segments[-1]
        if level[coordinate[1]][coordinate[0]] == '.':
@@ -86,8 +88,6 @@ while True:
            level[coordinate2[1]][coordinate2[0]] = '.'
        
        level[coordinate[1]][coordinate[0]] = str(i)
-
-
 
     aantal_voedsel = int(input())   #Lees aantal nieuw voedsel en posities
     if aantal_voedsel == 0:

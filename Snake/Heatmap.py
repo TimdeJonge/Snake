@@ -10,8 +10,8 @@ from BFS import mapFood
 dx = [0,  1, 0, -1]
 dy = [-1, 0, 1,  0]
     
-level=['0##..',
-       '###.x',                                                                     
+level=['0###.',
+       '####x',                                                                     
        '#.2..',
        '.#1x#',
        '.#..#',
@@ -68,7 +68,7 @@ def mapHeat():
        #We geven de warmte van de heatmap mee
        #We laten de warmte uitvloeien
        counter = 0
-       while counter <= 0:
+       while counter <= 4:
               datamap = deepcopy(heatmap)
               
               for y in range(level_hoogte):
@@ -90,3 +90,7 @@ def mapHeat():
        
 for i in mapHeat():
        print(i)
+
+       
+heatmap = mapHeat()
+foodmap = mapFood()
