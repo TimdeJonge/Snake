@@ -44,14 +44,8 @@ while True:
         #print("We vinden " + level[y_new][x_new])
         if level[y_new][x_new] == '.':
             moves.put((100 + random.randint(0,5), 'urdl'[i]))
-            moves_empty.append('urdl'[i])
         elif level[y_new][x_new] == 'x':
-            moves.put((5, 'urdl'[i]))
-            moves_candy.append('urdl'[i])
-    #if len(moves_candy) != 0: 
-        #direction = random.choice(moves_candy)
-    #elif len(moves_empty) != 0: 
-        #direction = random.choice(moves_empty)
+            moves.put((5 + random.randint(0,5), 'urdl'[i]))
     if not moves.empty():
         direction = moves.get()[1]
     else: 
