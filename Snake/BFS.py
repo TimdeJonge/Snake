@@ -14,21 +14,28 @@ level=['0##..',
        '###.x',                                                                     
        '#.2..',
        '.#1x#',
-       '.#..#',
-       'x#..#']
+       'x#..#',
+       '.#..#']
 level_hoogte = 6
 level_breedte = 5
 snakes = [Snake([(0,0)]), Snake([(2,3)]), Snake([(2,2)])]  
 speler_nummer = 0
 aantal_spelers = 3
 aantal_voedsel = 3
-voedsel_posities = [(4,1), (3,3), (0,5)]
+voedsel_posities = [(4,1), (3,3), (0,4)]
 
         #map_start is toegevoegd om het testen van giveDistance en givePath mogelijk te maken.
         #TODO: Werk map_start weg op een efficiente manier.
 
 map_start = snakes[0].head
-    
+
+        #Lijst maken van alle buurvakjes
+def neighbours(coordinate):
+       neighbourList = []
+       for i in range(4):
+              neighbourList.append(((coordinate[0] + dx[i]) % level_breedte, (coordinate[1] + dy[i]) % level_hoogte))
+       return neighbourList
+       
         #Er kunnen maximaal 8 spelers zijn. 
         #Hierdoor hoeven we alleen deze lijst te checken om te kijken of een vakje begaanbaar is.
 def isWall(node):
@@ -60,9 +67,9 @@ def mapLevel(start):
         current = frontier.get()[1]
 
         #print(current, cost[current])          
-        neighbours = [((current[0] + dx[i])%level_breedte, (current[1] + dy[i])%level_hoogte) for i in range(4)]           #
+        neighbourList = neighbours(current)
 
-        for node in neighbours:
+        for node in neighbourList:
             new_cost = cost[current] + 1                                # Hier wordt de cost van iedere stap aangenomen als 1. Mogelijk wordt dit op enig punt veranderd.
             testBool = (node not in came_from or new_cost < cost[node]) and not isWall(node) 
             if testBool:
@@ -84,17 +91,24 @@ def givePath(goal):
         path.append(current)
     path.reverse()
     return path
-    #Voor giveDistance wordt nu de hele map gescand om 1 afstand te bepalen.
-    #Dit is inefficienter dan bijvoorbeeld A*.
-    #Eigenlijk is het plan niet giveDistance nog te gebruiken, de functie
-    #was vooral heel handig om mee te testen. 
+        #Voor giveDistance wordt nu de hele map gescand om 1 afstand te bepalen.
+        #Dit is inefficienter dan bijvoorbeeld A*.
+        #Eigenlijk is het plan niet giveDistance nog te gebruiken, de functie
+        #was vooral heel handig om mee te testen. 
 def giveDistance(goal):
 
     return mapLevel(map_start)[0][goal]
-
+            
+            #mapFood gebruikt alleen de variabelen die uit player.py zouden komen.
+            #Eerst bepaalt hij voor alle food de afstanden voor alle spelers tot dat voedsel
+            #Daarna bepaalt hij wie het dichtst bij is, en hoeveel dichter bij die is dan de tweede.
+            #Output is een lijst van lijsten met 
+            #Eerste argument: coordinaat van voedsel waar wij het dichtst bij zijn
+            #Tweede arugment: Verschil in afstanden
 def mapFood():
-
     foodDistance = {}
+    close_food = []
+    
     for food in voedsel_posities:
         foodDistance[food] = []                 #Dit is geen mooie oplossing, wat mij betreft
                                                 #Ik ben er alleen nog niet zo uit hoe het wel te doen.
@@ -110,9 +124,29 @@ def mapFood():
                 foodDistance[food].append(lengthMap[food])  
             else:
                 foodDistance[food].append(-1)
-    return foodDistance
 
-#print(mapFood())
+    
+    for food in foodDistance:
+        minimum = 10**6             #Waarde hoog gekozen zodat er duidelijk verschil is tussen het geval
+        next_best = 10**6           #waar er 2 personen bij kunnen en waar er 1 persoon bij kan
+        closest_player = (speler_nummer + 1) % aantal_spelers       #Default: Als niemand er bij kan, doe alsof iemand anders het dichtst bij is 
+        
+        for i in range(aantal_spelers): 
+            length = foodDistance[food][i]
+            if length == -1:
+                continue
+            elif length > minimum:
+                if length < next_best:
+                    next_best = length
+            else: 
+                minimum = length
+                closest_player = i
+                
+        if closest_player == speler_nummer:
+            if next_best - minimum < 2000:          #Als wij niet de enige zijn:
+                close_food.append([food, next_best - minimum])
+    return(close_food)
 
+print(mapFood())
 
 source = 'http://www.redblobgames.com/pathfinding/a-star/introduction.html'
