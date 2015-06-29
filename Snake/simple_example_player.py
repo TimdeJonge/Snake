@@ -72,8 +72,6 @@ while True:
         i = 'urdlx'.index(speler_bewegingen[j])
         coordinate = ((snakes[j].segments[-1][0] + dx[i]) % level_breedte, (snakes[j].segments[-1][1] + dy[i]) % level_hoogte)
         snakes[j].move(coordinate, level[coordinate[1]][coordinate[0]])
-    
-    #TO DO: volgorde bepalen.
         
     for i in range(len(snakes)):
        coordinate = snakes[i].segments[-1]

@@ -1,18 +1,60 @@
+import time
 from queue import PriorityQueue
+T1 = time.perf_counter()
 dx = [0,  1, 0, -1]
 dy = [-1, 0, 1,  0]
 legend = 'urdl'
 
-level=['.##.....#.',
-       '###....#..',
-       '......x#.#',
-       '.#.....#..',
-       '.#..#x..##',
-       '..........',
-       '...x...#..',
-       '..........',
-       '......x.##',
-       '#...#...#.']
+level=['x##xxxxx#xx##xxxxx#xx##xxxxx#xx##xxxxx#xx##xxxxx#x',
+       '###xxxx#xx###xxxx#xx###xxxx#xx###xxxx#xx###xxxx#xx',
+       'xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#',
+       'x#xxxxx#xxx#xxxxx#xxx#xxxxx#xxx#xxxxx#xxx#xxxxx#xx',
+       'x#xx#xxx##x#xx#xxx##x#xx#xxx##x#xx#xxx##x#xx#xxx##',
+       'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+       'xxxxxxx#xxxxxxxxx#xxxxxxxxx#xxxxxxxxx#xxxxxxxxx#xx',
+       'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+       'xxxxxxxx##xxxxxxxx##xxxxxxxx##xxxxxxxx##xxxxxxxx##',
+       '#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x',
+       'x##xxxxx#xx##xxxxx#xx##xxxxx#xx##xxxxx#xx##xxxxx#x',
+       '###xxxx#xx###xxxx#xx###xxxx#xx###xxxx#xx###xxxx#xx',
+       'xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#',
+       'x#xxxxx#xxx#xxxxx#xxx#xxxxx#xxx#xxxxx#xxx#xxxxx#xx',
+       'x#xx#xxx##x#xx#xxx##x#xx#xxx##x#xx#xxx##x#xx#xxx##',
+       'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+       'xxxxxxx#xxxxxxxxx#xxxxxxxxx#xxxxxxxxx#xxxxxxxxx#xx',
+       'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+       'xxxxxxxx##xxxxxxxx##xxxxxxxx##xxxxxxxx##xxxxxxxx##',
+       '#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x',
+       'x##xxxxx#xx##xxxxx#xx##xxxxx#xx##xxxxx#xx##xxxxx#x',
+       '###xxxx#xx###xxxx#xx###xxxx#xx###xxxx#xx###xxxx#xx',
+       'xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#',
+       'x#xxxxx#xxx#xxxxx#xxx#xxxxx#xxx#xxxxx#xxx#xxxxx#xx',
+       'x#xx#xxx##x#xx#xxx##x#xx#xxx##x#xx#xxx##x#xx#xxx##',
+       'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+       'xxxxxxx#xxxxxxxxx#xxxxxxxxx#xxxxxxxxx#xxxxxxxxx#xx',
+       'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+       'xxxxxxxx##xxxxxxxx##xxxxxxxx##xxxxxxxx##xxxxxxxx##',
+       '#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x',
+       'x##xxxxx#xx##xxxxx#xx##xxxxx#xx##xxxxx#xx##xxxxx#x',
+       '###xxxx#xx###xxxx#xx###xxxx#xx###xxxx#xx###xxxx#xx',
+       'xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#',
+       'x#xxxxx#xxx#xxxxx#xxx#xxxxx#xxx#xxxxx#xxx#xxxxx#xx',
+       'x#xx#xxx##x#xx#xxx##x#xx#xxx##x#xx#xxx##x#xx#xxx##',
+       'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+       'xxxxxxx#xxxxxxxxx#xxxxxxxxx#xxxxxxxxx#xxxxxxxxx#xx',
+       'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+       'xxxxxxxx##xxxxxxxx##xxxxxxxx##xxxxxxxx##xxxxxxxx##',
+       '#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x',
+       'x##xxxxx#xx##xxxxx#xx##xxxxx#xx##xxxxx#xx##xxxxx#x',
+       '###xxxx#xx###xxxx#xx###xxxx#xx###xxxx#xx###xxxx#xx',
+       'xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#xxxxxxx#x#',
+       'x#xxxxx#xxx#xxxxx#xxx#xxxxx#xxx#xxxxx#xxx#xxxxx#xx',
+       'x#xx#xxx##x#xx#xxx##x#xx#xxx##x#xx#xxx##x#xx#xxx##',
+       'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+       'xxxxxxx#xxxxxxxxx#xxxxxxxxx#xxxxxxxxx#xxxxxxxxx#xx',
+       'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+       'xxxxxxxx##xxxxxxxx##xxxxxxxx##xxxxxxxx##xxxxxxxx##',
+       '#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x#xxx#xxx#x']
 head = (0,0)
 
 
@@ -37,7 +79,7 @@ def mapLevel(start):
     came_from[start] = None
     while(not frontier.empty()):
         current = frontier.get()[1]
-        print(current, cost[current])
+        #print(current, cost[current])
         neighbours = [((current[0] + dx[i])%10, (current[1] + dy[i])%10) for i in range(4)]
         for node in neighbours:
             
@@ -63,5 +105,9 @@ def givePath(goal):
 
 def giveDistance(goal):
    return lengthMap[goal]
+   
+print(givePath((5,5)),giveDistance((5,5)))
+T2 = time.perf_counter()
+print(T2 - T1)
 
 source = 'http://www.redblobgames.com/pathfinding/a-star/introduction.html'
