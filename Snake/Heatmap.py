@@ -1,7 +1,7 @@
 from snake import Snake
 from copy import deepcopy
 from BFS import mapFood
-
+from BFS import givePath
        #Het onderstaande is een simulatie van echte data zoals die binnen zou kunnen komen.
        #Dit zijn alle variabelen die we uit player.py nodig zullen hebben.
        #Het is ook alles wat we binnen dit bestand zullen gebruiken.
@@ -10,23 +10,23 @@ from BFS import mapFood
 dx = [0,  1, 0, -1]
 dy = [-1, 0, 1,  0]
     
-level = ['..................................................',
-'.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#', 
-'.............................x..x.................',
-'.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#x#.#.#',
-'.....................x...........................x',
-'.#.#.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#',
-'............x.....................................',
-'.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#', 
-'..0.......................................1.......',
-'.#.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#']
+level = ['######.########.##.#####.###############.#########', 
+'#.x.#........2#...................................', 
+'#.###x..#######.#.#........#####.##############.#.', 
+'#.....#.x.......#.#.###.###...................#.#.', 
+'#.#.................#.....#.........x.............', 
+'#.#.######.#####..#.............10............#.#.', 
+'#.#.#..........##.#.#.....######.################.', 
+'#x#.............#.x.###.###...#.######.#####..#...', 
+'#.#.#..........###.####.#######.#####.###x#.###.#.', 
+'#...######.#####................................#.']
 level_hoogte = 10
 level_breedte = 50
-snakes = [Snake([(2,8)]), Snake([(42,8)])]
-speler_nummer = 0 
+snakes = [Snake([(33,5)]), Snake([(32,5)]), Snake([(13,1)])]
+speler_nummer = 2 
 aantal_spelers = 3
-aantal_voedsel = 10
-voedsel_posities = [(29,2), (32,2), (44,3), (14,3), (21,4), (49,4), (20,5), (12,6), (2,7), (16,9)]
+aantal_voedsel = 7
+voedsel_posities = [(2,1), (5,2), (8,3), (36,4), (1,7), (18,7), (41,8)]
 
        #We kennen een waarde toe aan alle muren
        #Deze moet overgezet worden in het bestand waarin het gebruikt wordt.
@@ -72,7 +72,8 @@ def mapHeat():
        #We geven de warmte van de heatmap mee
        #We laten de warmte uitvloeien
        counter = 0
-       while counter <= 4:
+       max_counter = 4
+       while counter <= max_counter:
               datamap = deepcopy(heatmap)
               
               for y in range(level_hoogte):
@@ -88,13 +89,34 @@ def mapHeat():
                                    value /= 4
                                    heatmap[y][x] = int(value)
 
-              for i in heatmap:
-                     print(i)
-              print('\n')
+              #for i in heatmap:
+                     #print(i)
+              #print('\n')
               counter += 1
        return(heatmap)
+       
+def calculateLimit(heatmap):
+       totalSum = 0 
+       for y in range(level_hoogte):
+              for x in range(level_breedte):
+                     totalSum += heatmap[y][x]
+       average = totalSum / (level_breedte * level_hoogte)
+       return((3*wall_value + average)/4)
        
 #for i in mapHeat():
 #       print(i)
 
-mapHeat()
+heatmap = mapHeat()
+foodmap = mapFood()
+print(calculateLimit(heatmap))
+for i in heatmap:
+       print(i)
+print('\n')
+print(foodmap)
+foodheat = {}
+paths = {}
+for (food, distance) in foodmap:
+       paths[food] = givePath(snakes[speler_nummer].head, food)
+       foodheat[food] = heatmap[food[1]][food[0]]
+print(foodheat)
+print(paths)

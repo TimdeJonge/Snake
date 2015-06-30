@@ -23,7 +23,7 @@ level = ['######.########.##.#####.###############.#########',
 level_hoogte = 10
 level_breedte = 50
 snakes = [Snake([(33,5)]), Snake([(32,5)]), Snake([(13,1)])]
-speler_nummer = 1 
+speler_nummer = 2 
 aantal_spelers = 3
 aantal_voedsel = 7
 voedsel_posities = [(2,1), (5,2), (8,3), (36,4), (1,7), (18,7), (41,8)]
@@ -82,9 +82,9 @@ def mapLevel(start):
                 frontier.put((new_cost,node))
     return([cost, came_from])
 
-def givePath(goal):
+def givePath(start, goal):
     
-    temp = mapLevel(map_start)
+    temp = mapLevel(start)
     lengthMap = temp[0]
     arrowMap = temp[1]
     
@@ -129,7 +129,7 @@ def mapFood():
             else:
                 foodDistance[food].append(-1)
 
-    print(foodDistance)
+    #print(foodDistance)
     for food in foodDistance:
         minimum = 10**6             #Waarde hoog gekozen zodat er duidelijk verschil is tussen het geval
         next_best = 10**6           #waar er 2 personen bij kunnen en waar er 1 persoon bij kan
