@@ -10,23 +10,41 @@ from BFS import givePath
 dx = [0,  1, 0, -1]
 dy = [-1, 0, 1,  0]
     
-level = ['######.########.##.#####.###############.#########', 
-'#.x.#........2#...................................', 
-'#.###x..#######.#.#........#####.##############.#.', 
-'#.....#.x.......#.#.###.###...................#.#.', 
-'#.#.................#.....#.........x.............', 
-'#.#.######.#####..#.............10............#.#.', 
-'#.#.#..........##.#.#.....######.################.', 
-'#x#.............#.x.###.###...#.######.#####..#...', 
-'#.#.#..........###.####.#######.#####.###x#.###.#.', 
-'#...######.#####................................#.']
-level_hoogte = 10
-level_breedte = 50
-snakes = [Snake([(33,5)]), Snake([(32,5)]), Snake([(13,1)])]
-speler_nummer = 2 
-aantal_spelers = 3
-aantal_voedsel = 7
-voedsel_posities = [(2,1), (5,2), (8,3), (36,4), (1,7), (18,7), (41,8)]
+level = ['..0#........#.#..#....#...#...',
+'..........3.......x........#..',
+'.......#...............#......',
+'....#.....#..#........#...#...',
+'.#................##..........',
+'..........x..............#...#',
+'......#.....#.......#..#...#..',
+'.......#......#2...#.........#',
+'.......##...#.....#..........#',
+'....##..........#.....#.......',
+'..................#...........',
+'...x..#....#........#.........',
+'.................#..#.1.#.....',
+'.....#...........#.#......###.',
+'.....#......................x.',
+'#.........#...#..#........###.',
+'.##...........................',
+'.....#...#.......#...........#',
+'#.........#..........x........',
+'.....x.........#..#.........#.',
+'............#...#.............',
+'...#.#.....................#..',
+'...#...##.............#....#..',
+'....#............#.#......#...',
+'......................#...#...']
+
+level_hoogte = 25
+level_breedte = 30
+snakes = [Snake([(2,0)]),  Snake([(22,12)]), Snake([(15,7)]), Snake([(10,1)])]  
+speler_nummer = 1
+aantal_spelers = 4
+aantal_voedsel = 6
+voedsel_posities = [(18,1), (10,5), (3,11), (26,14), (21,18), (5,19)]
+
+
 
        #We kennen een waarde toe aan alle muren
        #Deze moet overgezet worden in het bestand waarin het gebruikt wordt.
@@ -97,11 +115,16 @@ def mapHeat():
        
 def calculateLimit(heatmap):
        totalSum = 0 
+       counter = 0
        for y in range(level_hoogte):
               for x in range(level_breedte):
-                     totalSum += heatmap[y][x]
-       average = totalSum / (level_breedte * level_hoogte)
-       return((3*wall_value + average)/4)
+                     if heatmap[y][x] == 1000:
+                            continue
+                     else:
+                            totalSum += heatmap[y][x]
+                            counter += 1
+       average = totalSum / counter
+       return((2*wall_value + average)/3)
        
 #for i in mapHeat():
 #       print(i)
@@ -109,14 +132,14 @@ def calculateLimit(heatmap):
 heatmap = mapHeat()
 foodmap = mapFood()
 print(calculateLimit(heatmap))
-for i in heatmap:
-       print(i)
-print('\n')
-print(foodmap)
+#for i in heatmap:
+       #print(i)
+#print('\n')
+#print(foodmap)
 foodheat = {}
 paths = {}
 for (food, distance) in foodmap:
-       paths[food] = givePath(snakes[speler_nummer].head, food)
+       paths[food] = (givePath(snakes[speler_nummer].head, food), distance)
        foodheat[food] = heatmap[food[1]][food[0]]
 print(foodheat)
 print(paths)

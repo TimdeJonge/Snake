@@ -12,7 +12,7 @@ level_hoogte = 10
 level_breedte = 50
 snakes = [Snake([(2,8)]), Snake([(41,8)])]
 speler_nummer = 0 
-aantal_spelers = 3
+aantal_spelers = 2 
 aantal_voedsel = 10
 voedsel_posities = [(29,2), (32,2), (44,3), (14,3), (21,4), (49,4), (20,5), (12,6), (2,7), (16,9)]
 
@@ -45,7 +45,7 @@ level = ['######.########.##.#####.###############.#########',
 '#...######.#####................................#.']
 level_hoogte = 10
 level_breedte = 50
-snakes = [Snake([(33,5)]), Snakes([32,5])]
+snakes = [Snake([(33,5)]), Snake([(32,5)])]
 speler_nummer = 1
 aantal_spelers = 2
 aantal_voedsel = 7
@@ -77,14 +77,13 @@ level = ['..0#........#.#..#....#...#...',
 '....#............#.#......#...',
 '......................#...#...']
 
-level_hoogte = 30
-level_breedte = 25
-snakes = [Snake([(2,0)]), Snake([(15,7)]), Snake([(22,12)])], Snake([(10,1)])  
+level_hoogte = 25
+level_breedte = 30
+snakes = [Snake([(2,0)]),  Snake([(22,12)]), Snake([(15,7)]), Snake([(10,1)])]  
 speler_nummer = 0
 aantal_spelers = 4
 aantal_voedsel = 6
 voedsel_posities = [(18,1), (10,5), (3,11), (28,14), (21,18), (5,19)]
-
 
 level = [###.....##.#.....#.#.##...#..#...#..#.#.',
 '....#..#...#...........###...###.#..#...',
