@@ -103,11 +103,16 @@ def mapHeat():
        
 def calculateLimit(heatmap):
        totalSum = 0 
+       counter = 0
        for y in range(level_hoogte):
               for x in range(level_breedte):
-                     totalSum += heatmap[y][x]
-       average = totalSum / (level_breedte * level_hoogte)
-       return((3*wall_value + average)/4)
+                     if heatmap[y][x] == 1000:
+                            continue
+                     else:
+                            totalSum += heatmap[y][x]
+                            counter += 1
+       average = totalSum / counter
+       return((2*wall_value + average)/3)
        
 #for i in mapHeat():
 #       print(i)
@@ -115,14 +120,14 @@ def calculateLimit(heatmap):
 heatmap = mapHeat()
 foodmap = mapFood()
 print(calculateLimit(heatmap))
-for i in heatmap:
-       print(i)
-print('\n')
-print(foodmap)
+#for i in heatmap:
+       #print(i)
+#print('\n')
+#print(foodmap)
 foodheat = {}
 paths = {}
 for (food, distance) in foodmap:
-       paths[food] = givePath(snakes[speler_nummer].head, food)
+       paths[food] = (givePath(snakes[speler_nummer].head, food), distance)
        foodheat[food] = heatmap[food[1]][food[0]]
 print(foodheat)
 print(paths)
