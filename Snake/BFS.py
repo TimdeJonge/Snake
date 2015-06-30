@@ -147,6 +147,6 @@ def mapFood():
                 close_food.append([food, next_best - minimum])
     return(close_food)
 
-print(mapFood())
+#print(mapFood())
 
 source = 'http://www.redblobgames.com/pathfinding/a-star/introduction.html'
