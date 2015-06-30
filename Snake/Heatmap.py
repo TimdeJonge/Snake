@@ -96,6 +96,5 @@ def mapHeat():
        
 #for i in mapHeat():
 #       print(i)
->>>>>>> 68045e5cfbd22eb350848e3b303218aa1255c117
 
 mapHeat()
