@@ -1,7 +1,6 @@
 from snake import Snake
 from copy import deepcopy
-from BFS import mapFood
-from BFS import givePath
+from queue import PriorityQueue
        #Het onderstaande is een simulatie van echte data zoals die binnen zou kunnen komen.
        #Dit zijn alle variabelen die we uit player.py nodig zullen hebben.
        #Het is ook alles wat we binnen dit bestand zullen gebruiken.
@@ -10,35 +9,135 @@ from BFS import givePath
 dx = [0,  1, 0, -1]
 dy = [-1, 0, 1,  0]
     
-level = ['###.....##.#.....#.#.##...#..#...#..#.#.',
-'....#..#...#...........###...###.#..#...',
-'##.#...x#.#..##.#.#.##...#.....#...#..#.',
-'.#.#..##..#..........#.#..##.#.#..###.0.',
-'.#..#..##.###.#.#.#..#.#.#...##.#.......',
-'..#..#.#.#....#.#.#..#.............#...#',
-'##.#..#...#.#.#....#.#.#.#.#.###.#....#.',
-'#..#..x#....#.###...#...##2.....#..#....',
-'#....##.........#...#..#.....#.....#.#..',
-'#.......#...#.#...#..#.#.....#.#.#......',
-'#.#...##.##....#..##..#..#..#.....##.#..',
-'..##.....#..3#....#.......##.####.....#.',
-'##...#.#.#.#.#....#...#.#.#.....#...#.#.',
-'#.##.#...#.#..####..##..#.1.#...#.#..##.',
-'.....#.#.....#.....#..#.#..#....#.#.#...']
+level = ['..................................................',
+'.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#', 
+'.............................x..x.................',
+'.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#x#.#.#',
+'.....................x...........................x',
+'.#.#.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#',
+'............x.....................................',
+'.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#', 
+'..0.......................................1.......',
+'.#.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#']
+level_hoogte = 10
+level_breedte = 50
+snakes = [Snake([(2,8)]), Snake([(41,8)])]
+speler_nummer = 0 
+aantal_spelers = 2 
+aantal_voedsel = 10
+voedsel_posities = [(29,2), (32,2), (44,3), (14,3), (21,4), (49,4), (20,5), (12,6), (2,7), (16,9)]
 
-level_hoogte = 15
-level_breedte = 40
-snakes = [Snake([(38,3)]), Snake([(26,13)]), Snake([(26,7)]), Snake([(12,11)])]  
-speler_nummer = 0
-aantal_spelers = 4
-aantal_voedsel = 2
-voedsel_posities = [(2,7), (7,6)]
 
        #We kennen een waarde toe aan alle muren
        #Deze moet overgezet worden in het bestand waarin het gebruikt wordt.
 wall_value = 1000
 
        #Lijst maken van alle buurvakjes
+
+def isWall(node):
+    if level[node[1]][node[0]] in ['0', '1', '2', '3', '4', '5' ,'6', '7', '#']:
+        return True
+    return False
+
+def isFood(node):
+    if level[node[1]][node[0]] == 'x':
+        return True
+    return False
+
+def givePath(start, goal):
+    
+    temp = mapLevel(start)
+    lengthMap = temp[0]
+    arrowMap = temp[1]
+    
+    current = goal
+    path = [current]
+    while lengthMap[current] != 0: 
+        current = arrowMap[current]
+        path.append(current)
+    path.reverse()
+    return path
+    
+def mapLevel(start):
+    cost = {}
+    came_from = {}
+    frontier = PriorityQueue()
+    frontier.put((0,start))
+
+    cost[start] = 0
+    came_from[start] = None
+    while(not frontier.empty()):
+        current = frontier.get()[1]
+
+        #print(current, cost[current])          
+        neighbourList = neighbours(current)
+
+        for node in neighbourList:
+            new_cost = cost[current] + 1                                # Hier wordt de cost van iedere stap aangenomen als 1. Mogelijk wordt dit op enig punt veranderd.
+            testBool = (node not in came_from or new_cost < cost[node]) and not isWall(node) 
+            if testBool:
+                came_from[node] = current
+                cost[node] = new_cost
+                frontier.put((new_cost,node))
+    return([cost, came_from])
+    
+def mapFood():
+    foodDistance = {}
+    close_food = []
+    
+    for food in voedsel_posities:
+        foodDistance[food] = []                 #Dit is geen mooie oplossing, wat mij betreft
+                                                #Ik ben er alleen nog niet zo uit hoe het wel te doen.
+    for i in range(aantal_spelers):
+        head = snakes[i].head
+        temp = mapLevel(head)
+        lengthMap = temp[0]
+        
+        for food in voedsel_posities:           #Mocht voedsel bereikbaar zijn, wordt de afstand van speler naar voedsel
+                                                #gegeven door foodDistance[voedsel_positie][speler_nummer].
+                                                #Mocht het niet bereikbaar zijn, levert dit -1.
+            if food in lengthMap:
+                foodDistance[food].append(lengthMap[food])  
+            else:
+                foodDistance[food].append(-1)
+
+    #print(foodDistance)
+    for food in foodDistance:
+        minimum = 10**6             #Waarde hoog gekozen zodat er duidelijk verschil is tussen het geval
+        next_best = 10**6           #waar er 2 personen bij kunnen en waar er 1 persoon bij kan
+        closest_player = (speler_nummer + 1) % aantal_spelers       #Default: Als niemand er bij kan, doe alsof iemand anders het dichtst bij is 
+        
+        for i in range(aantal_spelers): 
+            length = foodDistance[food][i]
+            if length == -1:
+                continue
+            elif length > minimum:
+                if length < next_best:
+                    next_best = length
+            else: 
+                if minimum < 10**6:
+                    next_best = minimum
+                minimum = length
+                closest_player = i
+        if closest_player == speler_nummer:
+            if next_best - minimum < 2000:          #Als wij niet de enige zijn:
+                close_food.append([food, next_best - minimum])
+    return(close_food)
+    
+    
+def giveDirection(start, goal):
+       if start[0] == goal[0]:
+              if start[1] == goal[1] + 1:
+                     direction = 'u'
+              else:
+                     direction = 'd'
+       elif start[0] == goal[0] + 1:
+              direction = 'l'
+       else:
+              direction = 'r'
+       return(direction)
+
+
 def neighbours(coordinate):
        neighbourList = []
        for i in range(4):
@@ -112,22 +211,34 @@ def calculateLimit(heatmap):
                             totalSum += heatmap[y][x]
                             counter += 1
        average = totalSum / counter
-       return((2*wall_value + average)/3)
+       return((3*wall_value + average)/4)
        
 #for i in mapHeat():
 #       print(i)
 
 heatmap = mapHeat()
 foodmap = mapFood()
-print(calculateLimit(heatmap))
+#print("Limiet =", calculateLimit(heatmap))
 #for i in heatmap:
        #print(i)
 #print('\n')
 #print(foodmap)
+
 foodheat = {}
-paths = {}
+paths = PriorityQueue()
+#temp = []
 for (food, distance) in foodmap:
-       paths[food] = (givePath(snakes[speler_nummer].head, food), distance)
+       path = givePath(snakes[speler_nummer].head, food)
        foodheat[food] = heatmap[food[1]][food[0]]
-print(foodheat)
-print(paths)
+       if foodheat[food] < calculateLimit(heatmap):
+              paths.put((len(path), path))
+              #temp.append((path[-1], len(path)))
+#print("foodheat =", foodheat)
+#print("paths =", temp)
+
+if not paths.empty():
+       path = paths.get()[1]
+       #print("Path = ", path)
+       direction = giveDirection(path[0], path[1])
+
+print(direction)
