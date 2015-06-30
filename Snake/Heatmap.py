@@ -10,19 +10,23 @@ from BFS import mapFood
 dx = [0,  1, 0, -1]
 dy = [-1, 0, 1,  0]
     
-level=['0###.',
-       '####x',                                                                     
-       '#.2..',
-       '.#1x#',
-       '.#..#',
-       'x#..#']
-level_hoogte = 6
-level_breedte = 5
-snakes = [Snake([(0,0)]), Snake([(2,3)]), Snake([(2,2)])]  
-speler_nummer = 0
+level = ['..................................................',
+'.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#', 
+'.............................x..x.................',
+'.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#x#.#.#',
+'.....................x...........................x',
+'.#.#.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#',
+'............x.....................................',
+'.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#', 
+'..0.......................................1.......',
+'.#.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#']
+level_hoogte = 10
+level_breedte = 50
+snakes = [Snake([(2,8)]), Snake([(42,8)])]
+speler_nummer = 0 
 aantal_spelers = 3
-aantal_voedsel = 3
-voedsel_posities = [(4,1), (3,3), (0,5)]
+aantal_voedsel = 10
+voedsel_posities = [(29,2), (32,2), (44,3), (14,3), (21,4), (49,4), (20,5), (12,6), (2,7), (16,9)]
 
        #We kennen een waarde toe aan alle muren
        #Deze moet overgezet worden in het bestand waarin het gebruikt wordt.
@@ -83,14 +87,11 @@ def mapHeat():
                                           value += datamap[coordinate[1]][coordinate[0]]
                                    value /= 4
                                    heatmap[y][x] = int(value)
-              #for i in heatmap:
-                     #print(i)
+              print('\n', counter, '\n')
+              
+              for i in heatmap:
+                     print(i)
               counter += 1
        return(heatmap)
-       
-for i in mapHeat():
-       print(i)
 
-       
-heatmap = mapHeat()
-foodmap = mapFood()
+mapHeat()

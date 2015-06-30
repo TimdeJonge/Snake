@@ -10,19 +10,23 @@ from snake import Snake
 dx = [0,  1, 0, -1]
 dy = [-1, 0, 1,  0]
     
-level=['0##..',
-       '###.x',                                                                     
-       '#.2..',
-       '.#1x#',
-       'x#..#',
-       '.#..#']
-level_hoogte = 6
-level_breedte = 5
-snakes = [Snake([(0,0)]), Snake([(2,3)]), Snake([(2,2)])]  
-speler_nummer = 0
+level = ['######.########.##.#####.###############.#########', 
+'#.x.#........2#...................................', 
+'#.###x..#######.#.#........#####.##############.#.', 
+'#.....#.x.......#.#.###.###...................#.#.', 
+'#.#.................#.....#.........x.............', 
+'#.#.######.#####..#.............10............#.#.', 
+'#.#.#..........##.#.#.....######.################.', 
+'#x#.............#.x.###.###...#.######.#####..#...', 
+'#.#.#..........###.####.#######.#####.###x#.###.#.', 
+'#...######.#####................................#.']
+level_hoogte = 10
+level_breedte = 50
+snakes = [Snake([(33,5)]), Snake([(32,5)]), Snake([(13,1)])]
+speler_nummer = 1 
 aantal_spelers = 3
-aantal_voedsel = 3
-voedsel_posities = [(4,1), (3,3), (0,4)]
+aantal_voedsel = 7
+voedsel_posities = [(2,1), (5,2), (8,3), (36,4), (1,7), (18,7), (41,8)]
 
         #map_start is toegevoegd om het testen van giveDistance en givePath mogelijk te maken.
         #TODO: Werk map_start weg op een efficiente manier.
@@ -125,7 +129,7 @@ def mapFood():
             else:
                 foodDistance[food].append(-1)
 
-    
+    print(foodDistance)
     for food in foodDistance:
         minimum = 10**6             #Waarde hoog gekozen zodat er duidelijk verschil is tussen het geval
         next_best = 10**6           #waar er 2 personen bij kunnen en waar er 1 persoon bij kan
@@ -139,14 +143,12 @@ def mapFood():
                 if length < next_best:
                     next_best = length
             else: 
+                if minimum < 10**6:
+                    next_best = minimum
                 minimum = length
                 closest_player = i
-                
         if closest_player == speler_nummer:
             if next_best - minimum < 2000:          #Als wij niet de enige zijn:
                 close_food.append([food, next_best - minimum])
     return(close_food)
-
-print(mapFood())
-
 source = 'http://www.redblobgames.com/pathfinding/a-star/introduction.html'
