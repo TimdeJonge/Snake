@@ -87,11 +87,15 @@ def mapHeat():
                                           value += datamap[coordinate[1]][coordinate[0]]
                                    value /= 4
                                    heatmap[y][x] = int(value)
-              print('\n', counter, '\n')
-              
+
               for i in heatmap:
                      print(i)
+              print('\n')
               counter += 1
        return(heatmap)
+       
+#for i in mapHeat():
+#       print(i)
+>>>>>>> 68045e5cfbd22eb350848e3b303218aa1255c117
 
 mapHeat()

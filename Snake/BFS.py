@@ -151,4 +151,8 @@ def mapFood():
             if next_best - minimum < 2000:          #Als wij niet de enige zijn:
                 close_food.append([food, next_best - minimum])
     return(close_food)
+
+#print(mapFood())
+
+
 source = 'http://www.redblobgames.com/pathfinding/a-star/introduction.html'
