@@ -32,8 +32,20 @@ voedsel_posities = [(29,2), (32,2), (44,3), (14,3), (21,4), (49,4), (20,5), (12,
        #Deze moet overgezet worden in het bestand waarin het gebruikt wordt.
 wall_value = 1000
 
-       #Lijst maken van alle buurvakjes
+       
+            #Algemene flow van het programma zoals het nu gevormd is: 
+            #1: mapLevel(). Vanaf het hoofd van onze slang worden de afstanden naar alle vakjes en bijbehorende paden berekend.
+            #2: mapFood(). Eerst wordt een lijst gecre\"eerd van alle hoofden naar al het voedsel,
+            #   daarna wordt uit die lijsten gekeken waar wij het dichtst bij zijn. 
+            #   Return is de locaties van voedsel waar wij het dichtst bij zijn, en hoe veel verder de eerstvolgende is.
+            #3: mapHeat(). We cre\"eren een heatmap waarin de muren en slangen allemaal bronnen zijn.
+            #   Op deze wijze is het voordelig om naar een koud gebied te zijn, hier is immers het minste in de buurt. 
+            #4: giveConclusion(). Gebruikmakend van voorgaande data trekken we onze conclusie over welk vakje we willen bezoeken.
 
+#q======== HULPFUNCTIE'S VOOR mapLevel() =============
+
+        #Er kunnen maximaal 8 spelers zijn. 
+        #Hierdoor hoeven we alleen deze lijst te checken om te kijken of een vakje begaanbaar is.
 def isWall(node):
     if level[node[1]][node[0]] in ['0', '1', '2', '3', '4', '5' ,'6', '7', '#']:
         return True
@@ -44,19 +56,19 @@ def isFood(node):
         return True
     return False
 
-def givePath(start, goal):
-    
-    temp = mapLevel(start)
-    lengthMap = temp[0]
-    arrowMap = temp[1]
-    
-    current = goal
-    path = [current]
-    while lengthMap[current] != 0: 
-        current = arrowMap[current]
-        path.append(current)
-    path.reverse()
-    return path
+       #Lijst maken van alle buurvakjes
+def neighbours(coordinate):
+       neighbourList = []
+       for i in range(4):
+              neighbourList.append(((coordinate[0] + dx[i]) % level_breedte, (coordinate[1] + dy[i]) % level_hoogte))
+       return neighbourList
+
+#========= mapLevel() =============
+        #Door middel van BFS wordt het hele bereikbare level een waarde toegekend. 
+        #Onbereikbare elementen krijgen geen waarde, dit wordt later afgehandeld.
+        #Output bestaat uit 2 dictionaries:
+        #De eerste bevat de cost om naar ieder punt te gaan
+        #De tweede bevat het afgelopen punt om te doorlopen.
     
 def mapLevel(start):
     cost = {}
@@ -68,8 +80,6 @@ def mapLevel(start):
     came_from[start] = None
     while(not frontier.empty()):
         current = frontier.get()[1]
-
-        #print(current, cost[current])          
         neighbourList = neighbours(current)
 
         for node in neighbourList:
@@ -80,7 +90,13 @@ def mapLevel(start):
                 cost[node] = new_cost
                 frontier.put((new_cost,node))
     return([cost, came_from])
-    
+#========== mapFood() ==============
+        #mapFood gebruikt alleen de variabelen die uit player.py zouden komen.
+        #Eerst bepaalt hij voor alle food de afstanden voor alle spelers tot dat voedsel
+        #Daarna bepaalt hij wie het dichtst bij is, en hoeveel dichter bij die is dan de tweede.
+        #Output is een lijst van lijsten met 
+        #Eerste argument: coordinaat van voedsel waar wij het dichtst bij zijn
+        #Tweede arugment: Verschil in afstanden
 def mapFood():
     foodDistance = {}
     close_food = []
@@ -99,9 +115,8 @@ def mapFood():
             if food in lengthMap:
                 foodDistance[food].append(lengthMap[food])  
             else:
-                foodDistance[food].append(-1)
+                foodDistance[food].append(-1)           #Hier het beloofde 
 
-    #print(foodDistance)
     for food in foodDistance:
         minimum = 10**6             #Waarde hoog gekozen zodat er duidelijk verschil is tussen het geval
         next_best = 10**6           #waar er 2 personen bij kunnen en waar er 1 persoon bij kan
@@ -109,7 +124,7 @@ def mapFood():
         
         for i in range(aantal_spelers): 
             length = foodDistance[food][i]
-            if length == -1:
+            if length == -1:                   
                 continue
             elif length > minimum:
                 if length < next_best:
@@ -125,24 +140,8 @@ def mapFood():
     return(close_food)
     
     
-def giveDirection(start, goal):
-       if start[0] == goal[0]:
-              if start[1] == goal[1] + 1:
-                     direction = 'u'
-              else:
-                     direction = 'd'
-       elif start[0] == goal[0] + 1:
-              direction = 'l'
-       else:
-              direction = 'r'
-       return(direction)
 
-
-def neighbours(coordinate):
-       neighbourList = []
-       for i in range(4):
-              neighbourList.append(((coordinate[0] + dx[i]) % level_breedte, (coordinate[1] + dy[i]) % level_hoogte))
-       return neighbourList
+#============== mapHeat() =============
 
 def mapHeat():
        #Zorgen dat level aanpasbaar is (alles wordt 0)
@@ -152,10 +151,6 @@ def mapHeat():
               for x in range(level_breedte):
                      heatmap[y][x] = level[y][x]
                      
-       #for i in heatmap:
-              #print(i)
-       #print('\n')
-       
        #Alle snakes krijgen waarde van muur
        #TO DO: laten schalen met lengte
        for i in range(len(snakes)):
@@ -169,15 +164,11 @@ def mapHeat():
                             heatmap[y][x] = wall_value
                      else: 
                             heatmap[y][x] = 0
-       #print(mapFood())
-                            
-       #for i in heatmap:
-              #print(i)
        
        #We geven de warmte van de heatmap mee
        #We laten de warmte uitvloeien
        counter = 0
-       max_counter = 4
+       max_counter = 4          #Arbitrair, maar voor het moment een goede balans
        while counter <= max_counter:
               datamap = deepcopy(heatmap)
               
@@ -194,51 +185,68 @@ def mapHeat():
                                    value /= 4
                                    heatmap[y][x] = int(value)
 
-              #for i in heatmap:
-                     #print(i)
-              #print('\n')
+
               counter += 1
        return(heatmap)
+       
+#======== Hulpfuncties voor giveConclusion() ==============
+
+def giveDirection(start, goal):
+       if start[0] == goal[0]:
+              if start[1] == goal[1] + 1:
+                     direction = 'u'
+              else:
+                     direction = 'd'
+       elif start[0] == goal[0] + 1:
+              direction = 'l'
+       else:
+              direction = 'r'
+       return(direction)
        
 def calculateLimit(heatmap):
        totalSum = 0 
        counter = 0
        for y in range(level_hoogte):
               for x in range(level_breedte):
-                     if heatmap[y][x] == 1000:
+                     if heatmap[y][x] == wall_value:
                             continue
                      else:
                             totalSum += heatmap[y][x]
                             counter += 1
        average = totalSum / counter
        return((3*wall_value + average)/4)
-       
-#for i in mapHeat():
-#       print(i)
 
-heatmap = mapHeat()
-foodmap = mapFood()
-#print("Limiet =", calculateLimit(heatmap))
-#for i in heatmap:
-       #print(i)
-#print('\n')
-#print(foodmap)
+def givePath(start, goal):
+    
+    temp = mapLevel(start)
+    lengthMap = temp[0]
+    arrowMap = temp[1]
+    
+    current = goal
+    path = [current]
+    while lengthMap[current] != 0: 
+        current = arrowMap[current]
+        path.append(current)
+    path.reverse()
+    return path
 
-foodheat = {}
-paths = PriorityQueue()
-#temp = []
-for (food, distance) in foodmap:
-       path = givePath(snakes[speler_nummer].head, food)
-       foodheat[food] = heatmap[food[1]][food[0]]
-       if foodheat[food] < calculateLimit(heatmap):
-              paths.put((len(path), path))
-              #temp.append((path[-1], len(path)))
-#print("foodheat =", foodheat)
-#print("paths =", temp)
+#========== giveConclusion() ================
+        #TO DO: Creeer een default voor als er geen voedsel is dat voldoet
+        #TO DO: Test het feit dat we in mapFood ook distance mee kunnen geven voor een beslissing
+def giveConclusion():       
+    foodmap = mapFood()
+    heatmap = mapHeat()
+    foodheat = {}
+    paths = PriorityQueue()
+    for (food, distance) in foodmap:
+           path = givePath(snakes[speler_nummer].head, food)
+           foodheat[food] = heatmap[food[1]][food[0]]
+           if foodheat[food] < calculateLimit(heatmap):
+                  paths.put((len(path), path))
+    
+    if not paths.empty():
+           path = paths.get()[1]
+           direction = giveDirection(path[0], path[1])
+    return direction
 
-if not paths.empty():
-       path = paths.get()[1]
-       #print("Path = ", path)
-       direction = giveDirection(path[0], path[1])
-
-print(direction)
+print(giveConclusion())
