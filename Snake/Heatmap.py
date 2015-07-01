@@ -239,10 +239,10 @@ def giveConclusion():
     foodheat = {}
     paths = PriorityQueue()
     for (food, distance) in foodmap:
-           path = givePath(snakes[speler_nummer].head, food)
-           foodheat[food] = heatmap[food[1]][food[0]]
-           if foodheat[food] < calculateLimit(heatmap):
-                  paths.put((len(path), path))
+            path = givePath(snakes[speler_nummer].head, food)
+            foodheat[food] = heatmap[food[1]][food[0]]
+            if foodheat[food] < calculateLimit(heatmap):
+                paths.put((len(path), path))
     
     if not paths.empty():
            path = paths.get()[1]
