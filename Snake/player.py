@@ -144,9 +144,9 @@ def mapFood():
         if closest_player == speler_nummer:
             if aantal_spelers == 1:
                 if minimum != 10**6:
-                    close_food.append([food, next_best - minimum])
+                    close_food.append([food, minimum])
             elif next_best - minimum < 2000:          #Als wij niet de enige zijn:
-                close_food.append([food, next_best - minimum])
+                close_food.append([food, minimum])
     return(close_food)
     
     
@@ -224,7 +224,7 @@ def calculateLimit(heatmap):
                             totalSum += heatmap[y][x]
                             counter += 1
        average = totalSum / counter
-       return((3*wall_value + average)/4)
+       return((7*wall_value + 3*average)/10)
 
 def givePath(start, goal):
     
@@ -245,17 +245,17 @@ def givePath(start, goal):
         #TO DO: Test het feit dat we in mapFood ook distance mee kunnen geven voor een beslissing
 def giveConclusion():       
     foodmap = mapFood()
-    print("Foodmap =", foodmap)
     heatmap = mapHeat()
     foodheat = {}
-    paths = PriorityQueue()
+    foods = PriorityQueue()
     for (food, distance) in foodmap:
-            path = givePath(snakes[speler_nummer].head, food)
-            foodheat[food] = heatmap[food[1]][food[0]]
-            if foodheat[food] < calculateLimit(heatmap):
-                paths.put((len(path), path))
-    if not paths.empty():
-        path = paths.get()[1]
+            
+        foodheat[food] = heatmap[food[1]][food[0]]
+        if foodheat[food] < calculateLimit(heatmap):
+                foods.put((distance, food))
+    if not foods.empty():
+        good_food = foods.get()[1]
+        path = givePath(snakes[speler_nummer].head, good_food)
         direction = giveDirection(path[0], path[1])
     else:
         minimum = wall_value
@@ -295,7 +295,7 @@ while True:
 
     
     speler_bewegingen = line        #String met bewegingen van alle spelers
-                                    #Nu is speler_bewegingen[i] de richting waarin speler i beweegd
+                                    #Nu is speler_bewegingen[i] de richting waarin speler i beweegt
     
                                     #Bekijkt richting die ingegeven wordt
                                     #Bepaalt nieuwe coördinaat in volgorde (x,y)
