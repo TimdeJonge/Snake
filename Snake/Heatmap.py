@@ -9,23 +9,25 @@ from queue import PriorityQueue
 dx = [0,  1, 0, -1]
 dy = [-1, 0, 1,  0]
     
-level = ['..................................................',
-'.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#', 
-'.............................x..x.................',
-'.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#x#.#.#',
-'.....................x...........................x',
-'.#.#.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#',
-'............x.....................................',
-'.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#', 
-'..0.......................................1.......',
-'.#.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#']
-level_hoogte = 10
+level = ['#................................................#',
+'#.################################################',  
+'#...............................x................#',
+'################################################.#',
+'#....................x..........................x#',
+'#.################################################', 
+'#...........x....................................#',
+'################################################.#', 
+'#..............................#.................#',
+'#.################################################',
+'#00x#............................................#',
+'################################################.#']
+level_hoogte = 12
 level_breedte = 50
-snakes = [Snake([(2,8)]), Snake([(41,8)])]
+snakes = [Snake([(1,10), (2,10)])]
 speler_nummer = 0 
-aantal_spelers = 2 
-aantal_voedsel = 10
-voedsel_posities = [(29,2), (32,2), (44,3), (14,3), (21,4), (49,4), (20,5), (12,6), (2,7), (16,9)]
+aantal_spelers = 1
+aantal_voedsel = 5
+voedsel_posities = [(32,2), (21,4), (48,4), (12,6), (3,10)]
 
 
        #We kennen een waarde toe aan alle muren
@@ -116,7 +118,7 @@ def mapFood():
                 foodDistance[food].append(lengthMap[food])  
             else:
                 foodDistance[food].append(-1)           #Hier het beloofde 
-
+    print(foodDistance)
     for food in foodDistance:
         minimum = 10**6             #Waarde hoog gekozen zodat er duidelijk verschil is tussen het geval
         next_best = 10**6           #waar er 2 personen bij kunnen en waar er 1 persoon bij kan
@@ -135,7 +137,10 @@ def mapFood():
                 minimum = length
                 closest_player = i
         if closest_player == speler_nummer:
-            if next_best - minimum < 2000:          #Als wij niet de enige zijn:
+            if aantal_spelers == 1:
+                if minimum != 10**6:
+                    close_food.append([food, next_best - minimum])
+            elif next_best - minimum < 2000:          #Als wij niet de enige zijn:
                 close_food.append([food, next_best - minimum])
     return(close_food)
     
@@ -235,18 +240,35 @@ def givePath(start, goal):
         #TO DO: Test het feit dat we in mapFood ook distance mee kunnen geven voor een beslissing
 def giveConclusion():       
     foodmap = mapFood()
+    print("Foodmap =", foodmap)
     heatmap = mapHeat()
     foodheat = {}
     paths = PriorityQueue()
     for (food, distance) in foodmap:
-           path = givePath(snakes[speler_nummer].head, food)
-           foodheat[food] = heatmap[food[1]][food[0]]
-           if foodheat[food] < calculateLimit(heatmap):
-                  paths.put((len(path), path))
-    
+            path = givePath(snakes[speler_nummer].head, food)
+            foodheat[food] = heatmap[food[1]][food[0]]
+            #if foodheat[food] < calculateLimit(heatmap):
+            paths.put((len(path), path))
     if not paths.empty():
-           path = paths.get()[1]
-           direction = giveDirection(path[0], path[1])
+        path = paths.get()[1]
+        direction = giveDirection(path[0], path[1])
+    else:
+        minimum = wall_value
+        direction = -1
+        head = snakes[speler_nummer].head
+        backuplist = []
+        for coordinate in neighbours(head):
+            if heatmap[coordinate[1]][coordinate[0]] < minimum:
+                direction = giveDirection(head, coordinate)
+                minimum = heatmap[coordinate[1]][coordinate[0]]
+            elif level[coordinate[1]][coordinate[0]] in ['.','x']:
+                backuplist.append(coordinate)
+        if direction == -1:
+                if len(backuplist)!= 0:
+                    direction = giveDirection(head,backuplist[0])
+                else:
+                    print("Goodbye, cruel world!")
+                    direction = 'r'
     return direction
 
 print(giveConclusion())
