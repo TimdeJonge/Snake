@@ -253,10 +253,13 @@ def giveConclusion():
         foodheat[food] = heatmap[food[1]][food[0]]
         if foodheat[food] < calculateLimit(heatmap):
                 foods.put((distance, food))
+                print("Ik overweeg om te gaan naar ", food)
     if not foods.empty():
         good_food = foods.get()[1]
+        print("Ik ga naar", good_food)
         path = givePath(snakes[speler_nummer].head, good_food)
         direction = giveDirection(path[0], path[1])
+        print("en dus in richting", direction)
     else:
         minimum = wall_value
         direction = -1
