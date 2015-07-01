@@ -123,7 +123,7 @@ def mapFood():
                 foodDistance[food].append(lengthMap[food])  
             else:
                 foodDistance[food].append(-1)           #Hier het beloofde 
-    print("foodDistance =", foodDistance)
+    #print("foodDistance =", foodDistance)
     for food in foodDistance:
         minimum = 10**6             #Waarde hoog gekozen zodat er duidelijk verschil is tussen het geval
         next_best = 10**6           #waar er 2 personen bij kunnen en waar er 1 persoon bij kan
@@ -245,7 +245,7 @@ def givePath(start, goal):
         #TO DO: Test het feit dat we in mapFood ook distance mee kunnen geven voor een beslissing
 def giveConclusion():       
     foodmap = mapFood()
-    print("Foodmap =", foodmap)
+    #print("Foodmap =", foodmap)
     heatmap = mapHeat()
     foodheat = {}
     paths = PriorityQueue()
@@ -276,6 +276,7 @@ def giveConclusion():
                     direction = 'r'
     return direction
 
+teller = 0
 while True:
     start = time.time()
     direction = giveConclusion()
@@ -283,8 +284,11 @@ while True:
     print('move')                   #Geef door dat we gaan bewegen
     print(direction)                 #Geef de richting door
     
+    teller += 1
     end = time.time()
     print("Deze zet duurde " + str(end - start) + " seconden.")
+    print("Aantel voedsel =", len(voedsel_posities))
+    print("Timestep ", teller)
     
     line = input()                  #Lees nieuwe informatie
 
