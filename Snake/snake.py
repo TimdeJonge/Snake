@@ -19,11 +19,11 @@ class Snake(object):
                 self.score += 99
             else:
                 self.last_segment = self.segments.pop(0)
-                print(self.segments)
+                #print(self.segments)
             self.segments.append(coordinate)
             self.head = coordinate
             self.score += 1
-            print(self.segments)
+            #print(self.segments)
 
 
 #snake = Snake([(0,0),(0,1)])
