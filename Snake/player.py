@@ -224,7 +224,7 @@ def calculateLimit(heatmap):
                             totalSum += heatmap[y][x]
                             counter += 1
        average = totalSum / counter
-       return((3*wall_value + average)/4)
+       return((wall_value + average)/2)
 
 def givePath(start, goal):
     
@@ -249,11 +249,15 @@ def giveConclusion():
     heatmap = mapHeat()
     foodheat = {}
     foods = PriorityQueue()
+    limit = 960
     for (food, distance) in foodmap:
         foodheat[food] = heatmap[food[1]][food[0]]
-        if foodheat[food] < calculateLimit(heatmap):
+        
+
+        if foodheat[food] < limit + 20 - 4*distance:
                 foods.put((distance, food))
-                print("Ik overweeg om te gaan naar ", food)
+                #print("Ik overweeg om te gaan naar ", food)
+    print("Foodheat =", foodheat)
     if not foods.empty():
         good_food = foods.get()[1]
         print("Ik ga naar", good_food)
@@ -282,8 +286,9 @@ def giveConclusion():
 teller = 0
 while True:
     start = time.time()
-    direction = giveConclusion()
     
+    print("Ik ben nu op coordinaat", snakes[speler_nummer].head)
+    direction = giveConclusion()
     print('move')                   #Geef door dat we gaan bewegen
     print(direction)                 #Geef de richting door
     
