@@ -248,7 +248,7 @@ def giveConclusion():
     #print("Foodmap =", foodmap)
     heatmap = mapHeat()
     foodheat = {}
-    paths = PriorityQueue()
+    foods = PriorityQueue()
     for (food, distance) in foodmap:
         foodheat[food] = heatmap[food[1]][food[0]]
         if foodheat[food] < calculateLimit(heatmap):
