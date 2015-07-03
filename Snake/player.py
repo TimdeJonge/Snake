@@ -57,6 +57,7 @@ def isWall(node):
         return True
     return False
 
+    #Volgens mij doen we hier niets mee...
 def isFood(node):
     if level[node[1]][node[0]] == 'x':
         return True
