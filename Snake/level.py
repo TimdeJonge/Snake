@@ -1,10 +1,9 @@
 from snake import Snake
+from random import shuffle
+
 dx = [ 0, 1, 0,-1, 0]
 dy = [-1, 0, 1, 0, 0]
 class Map(object):
-    
-
-    
     def __init__(self, level = [], level_hoogte = 0, level_breedte = 0, snakes =[], speler_nummer = 0, aantal_spelers = 1, aantal_voedsel = 0, voedsel_posities = []):
         output = []
         for row in level:
@@ -38,9 +37,25 @@ class Map(object):
            #Lijst maken van alle buurvakjes
     def neighbours(self, coordinate):
         neighbourList = []
-        for i in range(4):
+        indexList = [0,1,2,3]
+        shuffle(indexList)
+        for i in indexList:
             neighbourList.append(((coordinate[0] + dx[i]) % self.level_breedte, (coordinate[1] + dy[i]) % self.level_hoogte))
         return neighbourList
+    
+    def giveDirection(self, start, goal):
+       if start[0] == goal[0]:
+              if start[1] == (goal[1] + 1) % self.level_hoogte:
+                     direction = 'u'
+              else:
+                     direction = 'd'
+       elif start[0] == (goal[0] + 1) % self.level_breedte:
+              direction = 'l'
+       else:
+              direction = 'r'
+       return(direction)
+       
+
        
 #level = Map(['0###.',
 #       '####x',                                                                     
