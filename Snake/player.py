@@ -245,20 +245,16 @@ def givePath(start, goal):
         #TO DO: Test het feit dat we in mapFood ook distance mee kunnen geven voor een beslissing
 def giveConclusion():       
     foodmap = mapFood()
-    #print("Foodmap =", foodmap)
     heatmap = mapHeat()
     foodheat = {}
     foods = PriorityQueue()
-    limit = 960
+    limit = calculateLimit(heatmap)
     for (food, distance) in foodmap:
         foodheat[food] = heatmap[food[1]][food[0]]
         
         if foodheat[food] < limit:
                 foods.put((distance, food))
-                #print("Ik overweeg om te gaan naar ", food)
     print("Foodheat =", foodheat)
-    #if len(snakes[speler_nummer].segments) == 1:
-        #direction = firstConclusion(foodmap, heatmap, foods)
     if not foods.empty():
         good_food = foods.get()[1]
         print("Ik ga naar", good_food)

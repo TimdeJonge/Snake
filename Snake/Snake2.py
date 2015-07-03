@@ -144,9 +144,9 @@ def mapFood():
         if closest_player == speler_nummer:
             if aantal_spelers == 1:
                 if minimum != 10**6:
-                    close_food.append([food, next_best - minimum])
+                    close_food.append([food, minimum])
             elif next_best - minimum < 2000:          #Als wij niet de enige zijn:
-                close_food.append([food, next_best - minimum])
+                close_food.append([food, minimum])
     return(close_food)
     
     
@@ -248,14 +248,15 @@ def giveConclusion():
     print("Foodmap =", foodmap)
     heatmap = mapHeat()
     foodheat = {}
-    paths = PriorityQueue()
+    foods = PriorityQueue()
     for (food, distance) in foodmap:
-            path = givePath(snakes[speler_nummer].head, food)
             foodheat[food] = heatmap[food[1]][food[0]]
             if foodheat[food] < calculateLimit(heatmap):
-                paths.put((len(path), path))
-    if not paths.empty():
-        path = paths.get()[1]
+                foods.put((distance, food))
+    if not foods.empty():
+        good_food = foods.get()[1]
+        head = snakes[speler_nummer].head
+        path = givePath(head, good_food)
         direction = giveDirection(path[0], path[1])
     else:
         minimum = wall_value
