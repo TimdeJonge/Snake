@@ -255,6 +255,8 @@ def giveConclusion():
         if foodheat[food] < limit:
                 foods.put((distance, food))
     print("Foodheat =", foodheat)
+    #if len(snakes[speler_nummer].segments) == 1:
+        #direction = firstConclusion(foodmap, heatmap, foods)
     if not foods.empty():
         good_food = foods.get()[1]
         print("Ik ga naar", good_food)
