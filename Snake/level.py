@@ -3,6 +3,7 @@ from random import shuffle
 
 dx = [ 0, 1, 0,-1, 0]
 dy = [-1, 0, 1, 0, 0]
+
 class Map(object):
     def __init__(self, level = [], level_hoogte = 0, level_breedte = 0, snakes =[], speler_nummer = 0, aantal_spelers = 1, aantal_voedsel = 0, voedsel_posities = []):
         output = []
@@ -41,6 +42,7 @@ class Map(object):
         shuffle(indexList)
         for i in indexList:
             neighbourList.append(((coordinate[0] + dx[i]) % self.level_breedte, (coordinate[1] + dy[i]) % self.level_hoogte))
+        #print(coordinate, neighbourList)
         return neighbourList
     
     def giveDirection(self, start, goal):

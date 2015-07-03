@@ -6,22 +6,6 @@ dx = [ 0, 1, 0,-1, 0]
 dy = [-1, 0, 1, 0, 0]
 wall_value = 1000
 
-level = Map(['..............................',
-    '.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#', 
-    '.............................x',
-    '.#.#.#.#.#.#.#x#.#.#.#.#.#.#.#',
-    '.....................x........',   
-    '.#.#.#.#.#.#.#.#.#x#.#.#.#.#.#',
-    '#.x.#.......x.................',
-    '.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#', 
-    '.#0#.......................1..',
-    '.###.#.#.#.#.#.#x#.#.#.#.#.#.#'], 10, 30, [Snake([(2,8)]), Snake([(27,8)])], 
-    1, 2, 7, 
-    [(2,6), (29,2), (14,3), (21,4), (18,5), (12,6), (16,9)])
-    
-
-
-
 #========= mapLevel() =============
     #Door middel van BFS wordt het hele bereikbare level een waarde toegekend. 
     #Onbereikbare elementen krijgen geen waarde, dit wordt later afgehandeld.
@@ -111,20 +95,20 @@ def mapFood(level):
             if level.aantal_spelers == 1:
                 if minimum != 10**6:
                     close_food.append([minimum, food])
-            close_food.append([minimum, food])
+            if next_best - minimum < 2000 or level.snakes[level.speler_nummer + 1 % level.aantal_spelers].score > level.snakes[level.speler_nummer].score + 1000:
+                close_food.append([minimum, food])
     #TESTCODE
     
-    #print("MAPFOOD OUTPUT")   
-    #printlevel = deepcopy(level)
-    #for i in close_food:
-    #    print(i)
-    #    printlevel.level[i[1][1]][i[1][0]] = i[0]
-    #print(printlevel)
-    #print("EINDE MAPFOOD")
+    print("MAPFOOD OUTPUT")   
+    printlevel = deepcopy(level)
+    for i in close_food:
+        print(i)
+        printlevel.level[i[1][1]][i[1][0]] = i[0]
+    print(printlevel)
+    print("EINDE MAPFOOD")
     
     
     return(close_food)
-
 
 
 def mapHeat(level):
@@ -162,10 +146,9 @@ def mapHeat(level):
                     else:
                         for coordinate in heatmap.neighbours((x,y)):
                             value += datamap.level[coordinate[1]][coordinate[0]]
-                            value /= 4
-                            heatmap.level[y][x] = int(value)
+                        value /= 4
+                        heatmap.level[y][x] = int(value)
         counter += 1
-    #print(heatmap)
     return(heatmap)
 
 def calculateLimit(heatmap):
