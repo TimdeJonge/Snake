@@ -1,57 +1,35 @@
-#!/bin/python
-import random
-import time
 from snake import Snake
 from queue import PriorityQueue
 from copy import deepcopy
-#from Heatmap import mapHeat
-###Initialisatie
-# We lezen het doolhof en beginposities in
-
-level_hoogte = int(input())         #Lees hoe groot het level is
-level_breedte = int(input())
-voedsel_posities = []
-level = []                          #Lees het level regel voor regel
-for y in range(level_hoogte):
-    level.append(list(input()))
-
-aantal_spelers = int(input())       #Lees het aantal spelers en hun posities
-begin_posities = []
-for i in range(aantal_spelers):
-    begin_positie = [int(s) for s in input().split()]   #Maak lijst met x en y
-    begin_posities.append(begin_positie)      #Voeg dit coordinaat toe aan begin_posities
-
-
-speler_nummer = int(input())        #Lees welk spelernummer wij zijn
-###De tijdstap
-snakes = [Snake([(begin_posities[i][0], begin_posities[i][1])]) for i in range(aantal_spelers)]
-
-# We beginnen op de volgende positie:
-positie = begin_posities[speler_nummer]
-
-# u=up, d=down, l=left, r=right
-# dx en dy geven aan in welke richting 'u', 'r', 'd' en 'l' zijn:
-dx = [ 0, 1, 0,-1, 0]
-dy = [-1, 0, 1, 0, 0]
+dx = [0,  1, 0, -1]
+dy = [-1, 0, 1,  0]
+    
+level = ['..................................................',
+'.#################################################',  
+'.............................x..x.................',
+'#################################################.',
+'.....................x...........................x',
+'#################################################.', 
+'............x.....................................',
+'#################################################.', 
+'..................................................',
+'.#################################################',
+'..0...............................................',
+'#################################################.']
+level_hoogte = 12
+level_breedte = 50
+snakes = [Snake([(2,10)])]
+speler_nummer = 0 
+aantal_spelers = 1
+aantal_voedsel = 5
+voedsel_posities = [(29,2), (32,2), (21,4), (49,4), (12,6)]
 
 
        #We kennen een waarde toe aan alle muren
        #Deze moet overgezet worden in het bestand waarin het gebruikt wordt.
 wall_value = 1000
-first_food = 0
-            #Algemene flow van het programma zoals het nu gevormd is: 
-            #1: mapLevel(). Vanaf het hoofd van onze slang worden de afstanden naar alle vakjes en bijbehorende paden berekend.
-            #2: mapFood(). Eerst wordt een lijst gecre\"eerd van alle hoofden naar al het voedsel,
-            #   daarna wordt uit die lijsten gekeken waar wij het dichtst bij zijn. 
-            #   Return is de locaties van voedsel waar wij het dichtst bij zijn, en hoe veel verder de eerstvolgende is.
-            #3: mapHeat(). We cre\"eren een heatmap waarin de muren en slangen allemaal bronnen zijn.
-            #   Op deze wijze is het voordelig om naar een koud gebied te zijn, hier is immers het minste in de buurt. 
-            #4: giveConclusion(). Gebruikmakend van voorgaande data trekken we onze conclusie over welk vakje we willen bezoeken.
-
-#======== HULPFUNCTIE'S VOOR mapLevel() =============
-
-        #Er kunnen maximaal 8 spelers zijn. 
-        #Hierdoor hoeven we alleen deze lijst te checken om te kijken of een vakje begaanbaar is.
+first_food = (49,4)
+    
 def isWall(node):
     if level[node[1]][node[0]] in ['0', '1', '2', '3', '4', '5' ,'6', '7', '#']:
         return True
@@ -122,7 +100,7 @@ def mapFood():
                 foodDistance[food].append(lengthMap[food])  
             else:
                 foodDistance[food].append(-1)           #Hier het beloofde 
-    print("foodDistance =", foodDistance)
+    #print("foodDistance =", foodDistance)
     for food in foodDistance:
         minimum = 10**6             #Waarde hoog gekozen zodat er duidelijk verschil is tussen het geval
         next_best = 10**6           #waar er 2 personen bij kunnen en waar er 1 persoon bij kan
@@ -256,9 +234,9 @@ def giveConclusion():
                 foods.put((distance, food))
                 #print("Ik overweeg om te gaan naar ", food)
     print("Foodheat =", foodheat)
-    #if len(snakes[speler_nummer].segments) == 1:
-        #direction = firstConclusion(foodmap, heatmap, foods)
-    if not foods.empty():
+    if len(snakes[speler_nummer].segments) == 1:
+        direction = firstConclusion(foodmap, heatmap, foods)
+    elif not foods.empty():
         good_food = foods.get()[1]
         print("Ik ga naar", good_food)
         path = givePath(snakes[speler_nummer].head, good_food)
@@ -282,60 +260,50 @@ def giveConclusion():
                     print("Goodbye, cruel world!")
                     direction = 'r'
     return direction
-    
-teller = 0
-while True:
-    start = time.time()
-    
-    print("Ik ben nu op coordinaat", snakes[speler_nummer].head)
-    direction = giveConclusion()
-    
-    print('move')                   #Geef door dat we gaan bewegen
-    print(direction)                 #Geef de richting door
-    
-    teller += 1
-    end = time.time()
-    print("Deze zet duurde " + str(end - start) + " seconden.")
-    print("Aantel voedsel =", len(voedsel_posities))
-    print("Timestep ", teller)
-    
-    line = input()                  #Lees nieuwe informatie
 
-    if line == "quit":              #We krijgen dit door als het spel is afgelopen
-        print("bye")                #Geef door dat we dit begrepen hebben
-        break
+def setFirstFood(argument):
+    global first_food
+    first_food = argument
     
+def firstConclusion(foodmap, heatmap, foods):
+    limit = 960
+    if first_food != 0:
+        print("HERE")
+        foods.put(first_food)
+        good_food = foods.get()[1]
+        if good_food != first_food:
+            setFirstFood(good_food)
+        print("Ik ga naar", good_food)
+        path = givePath(snakes[speler_nummer].head, good_food)
+        direction = giveDirection(path[0], path[1])
+        print("en dus in richting", direction)
+    elif not foods.empty():
+        print("MISSED ME")
+        good_food = foods.get()[1]
+        setFirstFood(good_food)
+        print("Ik ga naar", good_food)
+        path = givePath(snakes[speler_nummer].head, good_food)
+        direction = giveDirection(path[0], path[1])
+        print("en dus in richting", direction)
+    else:
+        print("eh.")
+        minimum = wall_value
+        direction = -1
+        head = snakes[speler_nummer].head
+        backuplist = []
+        for coordinate in neighbours(head):
+            if heatmap[coordinate[1]][coordinate[0]] < minimum:
+                direction = giveDirection(head, coordinate)
+                minimum = heatmap[coordinate[1]][coordinate[0]]
+            elif level[coordinate[1]][coordinate[0]] in ['.','x']:
+                backuplist.append(coordinate)
+        if direction == -1:
+                if len(backuplist)!= 0:
+                    direction = giveDirection(head,backuplist[0])
+                else:
+                    print("Goodbye, cruel world!")
+                    direction = 'r'
+    return direction
 
-    
-    speler_bewegingen = line        #String met bewegingen van alle spelers
-                                    #Nu is speler_bewegingen[i] de richting waarin speler i beweegd
-    
-                                    #Bekijkt richting die ingegeven wordt
-                                    #Bepaalt nieuwe coördinaat in volgorde (x,y)
-                                    #Beweegt naar nieuwe punt
-    for j in range(len(snakes)):
-        i = 'urdlx'.index(speler_bewegingen[j])
-        coordinate = ((snakes[j].head[0] + dx[i]) % level_breedte, (snakes[j].head[1] + dy[i]) % level_hoogte)
-        if level[coordinate[1]][coordinate[0]] == 'x':
-            voedsel_posities.remove(coordinate)
-        snakes[j].move(coordinate, level[coordinate[1]][coordinate[0]])
-        
-    #TO DO: volgorde van de zetten bepalen (wanneer welke speler een zet mag doen)
-    
-    for i in range(len(snakes)):
-       coordinate = snakes[i].segments[-1]
-       if level[coordinate[1]][coordinate[0]] == '.':
-           coordinate2 = snakes[i].last_segment
-           level[coordinate2[1]][coordinate2[0]] = '.'
-       
-       level[coordinate[1]][coordinate[0]] = str(i)
-
-    aantal_voedsel = int(input())   #Lees aantal nieuw voedsel en posities
-    if aantal_voedsel == 0:
-        input()
-    for i in range(aantal_voedsel):
-        voedsel_positie = [int(s) for s in input().split()]
-        # Sla de voedsel positie op in een lijst en in het level
-        voedsel_posities.append((voedsel_positie[0], voedsel_positie[1]))
-        level[voedsel_positie[1]][voedsel_positie[0]] = "x"
-    
+print(giveConclusion())
+print(first_food)
